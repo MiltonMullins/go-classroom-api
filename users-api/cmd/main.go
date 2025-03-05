@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"database/sql"
@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	
+
 	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal(err)
