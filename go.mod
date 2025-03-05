@@ -1,3 +1,3 @@
-module github.com/classroom-api
+module github.com/miltonmullins/classroom-api
 
 go 1.23.5
