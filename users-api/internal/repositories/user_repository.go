@@ -33,7 +33,7 @@ func (u *userRepository) GetUserById(id int) (*models.User, error) {
 
 	var user models.User
 	for rows.Next() {
-		err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.Role)
+		err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.Role, &user.Password)
 		if err != nil {
 			//TODO dont throw a panic and stop the service
 			panic(err)
@@ -55,7 +55,7 @@ func (u *userRepository) GetUsers() []*models.User {
 	var users []*models.User
 	for rows.Next() {
 		var user models.User
-		err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.Role)
+		err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.Role, &user.Password)
 		if err != nil {
 			//TODO dont throw a panic and stop the service
 			panic(err)
@@ -68,7 +68,7 @@ func (u *userRepository) GetUsers() []*models.User {
 }
 
 func (u *userRepository) CreateUser(user *models.User) (*models.User, error) {
-	_, err := u.db.Exec("INSERT INTO users (first_name, last_name, email, role) VALUES ($1, $2, $3, $4)", user.FirstName, user.LastName, user.Email, user.Role)
+	_, err := u.db.Exec("INSERT INTO users (first_name, last_name, email, role, password) VALUES ($1, $2, $3, $4, $5)", user.FirstName, user.LastName, user.Email, user.Role, user.Password)
 	if err != nil {
 		//TODO dont throw a panic and stop the service
 		panic(err)
