@@ -1,0 +1,27 @@
+version: '2.33.0'
+
+services:
+  go-classroom:
+    container_name: go-classroom
+    image: milton87/go-classroom:1.0.0
+    build: .
+    environment:
+      DATABASE_URL: "postgres://postgres:postgres@classroom_db:5432/postgres?sslmode=disable"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - classroom_db
+  classroom_db:
+    container_name: classroom_db
+    image: postgres:17.3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  
+volumes:
+  pgdata: {}
