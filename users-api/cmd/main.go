@@ -2,29 +2,35 @@ package main
 
 import (
 	"database/sql"
-	_ "github.com/lib/pq"
 	"log"
-	"os"
 	"net/http"
+	//"os"
+
+	_ "github.com/lib/pq"
 
 	"github.com/miltonmullins/classroom-api/users-api/internal/handlers"
 	"github.com/miltonmullins/classroom-api/users-api/internal/repositories"
 	"github.com/miltonmullins/classroom-api/users-api/internal/services"
+	"github.com/miltonmullins/classroom-api/users-api/cmd/middleware"
 )
 
 func main() {
 
-	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	connStr := "postgres://postgres:postgres@classroom_db:5432/postgres?sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
 	//create the table if not exists
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS people (
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS users (
 		id SERIAL PRIMARY KEY,
-		name VARCHAR(100) NOT NULL,
-		age INT NOT NULL
+		first_name VARCHAR(100) NOT NULL,
+		last_name VARCHAR(100) NOT NULL,
+		email VARCHAR(100) NOT NULL,
+		role VARCHAR(100) NOT NULL,
+		password VARCHAR(100) NOT NULL
 	);`)
 	if err != nil {
 		log.Fatal(err)
@@ -40,17 +46,28 @@ func main() {
 	server.ListenAndServe() // Run the http server
 }
 
-
 func initializeRoutes(db *sql.DB) *http.ServeMux {
-	handler := handlers.NewUserHandler(
+	UserHandler := handlers.NewUserHandler(
 		services.NewUserService(
 			repositories.NewUserRepository(db)))
 
+	loginHandler := handlers.NewLoginHandler(
+		services.NewLoginService(
+			repositories.NewUserRepository(db)))
+
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /user/{id}", handler.GetUserById)
-	mux.HandleFunc("GET /users", handler.GetUsers)
-	mux.HandleFunc("POST /user", handler.CreateUser)
-	mux.HandleFunc("PUT /user/{id}", handler.UpdateUser)
-	mux.HandleFunc("DELETE /user/{id}", handler.DeleteUser)
+
+	//Login
+	mux.HandleFunc("POST /login", loginHandler.Login)
+	//TODO: mux.HandleFunc("/change-password", loginHandler.ChangePassword)
+
+	//CRUD
+	mux.Handle("GET /user/{id}", middleware.JWTAuth(middleware.Log(http.HandlerFunc(UserHandler.GetUserById))))
+	mux.HandleFunc("GET /users", UserHandler.GetUsers)
+	mux.Handle("POST /user", middleware.JWTAuth(middleware.Log(http.HandlerFunc(UserHandler.CreateUser))))
+	mux.Handle("PUT /user/{id}", middleware.JWTAuth(middleware.Log(http.HandlerFunc(UserHandler.UpdateUser))))
+	mux.Handle("DELETE /user/{id}", middleware.JWTAuth(middleware.Log(http.HandlerFunc(UserHandler.DeleteUser))))
 	return mux
 }
+
+
