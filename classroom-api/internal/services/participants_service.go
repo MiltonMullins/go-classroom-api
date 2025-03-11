@@ -12,23 +12,23 @@ type ParticipantsService interface {
 }
 
 type participantsService struct {
-	repo repositories.ParticipantsRepository
+	participantsRepository repositories.ParticipantsRepository
 }
 
 func NewParticipantsService(repo repositories.ParticipantsRepository) ParticipantsService {
 	return &participantsService{
-		repo: repo,
+		participantsRepository: repo,
 	}
 }
 
 func (s *participantsService) GetParticipantsByClassroomID(classroomID int) ([]*models.Participant, error) {
-	return s.repo.GetParticipantsByClassroomID(classroomID)
+	return s.participantsRepository.GetParticipantsByClassroomID(classroomID)
 }
 
 func (s *participantsService) CreateParticipant(participant *models.Participant) error {
-	return s.repo.CreateParticipant(participant)
+	return s.participantsRepository.CreateParticipant(participant)
 }
 
 func (s *participantsService) DeleteParticipant(classroomID, userID int) error {
-	return s.repo.DeleteParticipant(classroomID, userID)
+	return s.participantsRepository.DeleteParticipant(classroomID, userID)
 }
