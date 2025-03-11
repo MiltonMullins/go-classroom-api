@@ -73,7 +73,7 @@ func (h *participantsHandler) DeleteParticipant(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	userID, err := strconv.Atoi(r.PathValue("userID"))
+	userID, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

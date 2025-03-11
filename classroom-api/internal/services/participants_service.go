@@ -6,7 +6,7 @@ import (
 )
 
 type ParticipantsService interface {
-	GetParticipantsByClassroomID(classroomID int) ([]*models.Participant, error)
+	GetParticipantsByClassroomID(classroomID int) ([]*models.ParticipantResponse, error)
 	CreateParticipant(participant *models.Participant) error
 	DeleteParticipant(classroomID, userID int) error
 }
@@ -21,7 +21,7 @@ func NewParticipantsService(repo repositories.ParticipantsRepository) Participan
 	}
 }
 
-func (s *participantsService) GetParticipantsByClassroomID(classroomID int) ([]*models.Participant, error) {
+func (s *participantsService) GetParticipantsByClassroomID(classroomID int) ([]*models.ParticipantResponse, error) {
 	return s.participantsRepository.GetParticipantsByClassroomID(classroomID)
 }
 
