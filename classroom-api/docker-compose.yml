@@ -1,0 +1,25 @@
+services:
+  classroom-api:
+    container_name: classroom-api
+    image: milton87/classroom-api:1.0.1
+    build: .
+    environment:
+      DATABASE_URL: "postgres://postgres:postgres@classroom_db:5432/postgres?sslmode=disable"
+    ports:
+      - "8081:8081"
+    depends_on:
+      - classroom_db
+  classroom_db:
+    container_name: classroom_db
+    image: postgres:17.3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5433:5433"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  
+volumes:
+  pgdata: {}
