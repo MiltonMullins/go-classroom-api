@@ -6,13 +6,13 @@ import (
 	"time"
 )
 
-var secretKey = []byte("secret-key")//TODO: add env variable
+var secretKey = []byte("secret-key") //TODO: add env variable
 
 func CreateToken(email string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"email": email,
-			"exp":      time.Now().Add(time.Hour * 24).Unix(), //TODO: add env variable
+			"exp":   time.Now().Add(time.Hour * 24).Unix(), //TODO: add env variable
 		})
 
 	tokenString, err := token.SignedString(secretKey)
@@ -39,7 +39,7 @@ func VerifyToken(tokenString string) error {
 	return nil
 }
 
-//func ExtractIDFromToken(requestToken string, secret string) (string, error) {
+// func ExtractIDFromToken(requestToken string, secret string) (string, error) {
 func ExtractIDFromToken(requestToken string) (string, error) {
 	token, err := jwt.Parse(requestToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -53,10 +53,14 @@ func ExtractIDFromToken(requestToken string) (string, error) {
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
-
-	if !ok && !token.Valid {
+	if !ok || !token.Valid {
 		return "", fmt.Errorf("invalid token")
 	}
 
-	return claims["email"].(string), nil
+	email, ok := claims["email"].(string)
+	if !ok {
+		return "", fmt.Errorf("email claim is not a string or is missing")
+	}
+
+	return email, nil
 }
