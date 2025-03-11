@@ -4,29 +4,41 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
-	"github.com/miltonmullins/classroom-api/users-api/cmd/jwt"
+	"github.com/miltonmullins/classroom-api/users-api/utils"
 )
 
-func JWTAuth(next http.Handler) http.Handler {
+func JwtAuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Print("Executing JWT Auth")
-		w.Header().Set("Content-Type", "application/json")
-		tokenString := r.Header.Get("Authorization")
-		if tokenString == "" {
+		//w.Header().Set("Content-Type", "application/json") necesario?
+		
+		authHeader := r.Header.Get("Authorization")
+		tokenSplit := strings.Split(authHeader, " ")
+		if len(tokenSplit) != 2 {
 			w.WriteHeader(http.StatusUnauthorized)
-			fmt.Fprint(w, "Missing authorization header")
+			fmt.Fprint(w, "Invalid authorization header")
 			return
 		}
-		tokenString = tokenString[len("Bearer "):]//TODO Handle panic if tokenString isn't in correct format (Bearer <token>)
 
-		err := jwt.VerifyToken(tokenString)
+		authToken := tokenSplit[1]
+
+		err := jwt.VerifyToken(authToken)
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			fmt.Fprint(w, "Invalid token")
 			return
 		}
+
+		email, err := jwt.ExtractIDFromToken(authToken)
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
+			fmt.Fprint(w, "Invalid token")
+			return
+		}
+		w.Header().Set("x-user-email", email)
 		next.ServeHTTP(w, r)
 	})
 }

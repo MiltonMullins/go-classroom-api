@@ -4,14 +4,15 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+
 	//"os"
 
 	_ "github.com/lib/pq"
 
+	"github.com/miltonmullins/classroom-api/users-api/cmd/middleware"
 	"github.com/miltonmullins/classroom-api/users-api/internal/handlers"
 	"github.com/miltonmullins/classroom-api/users-api/internal/repositories"
 	"github.com/miltonmullins/classroom-api/users-api/internal/services"
-	"github.com/miltonmullins/classroom-api/users-api/cmd/middleware"
 )
 
 func main() {
@@ -62,12 +63,10 @@ func initializeRoutes(db *sql.DB) *http.ServeMux {
 	//TODO: mux.HandleFunc("/change-password", loginHandler.ChangePassword)
 
 	//CRUD
-	mux.Handle("GET /user/{id}", middleware.JWTAuth(middleware.Log(http.HandlerFunc(UserHandler.GetUserById))))
+	mux.Handle("GET /user/{id}", middleware.JwtAuthMiddleware(middleware.Log(http.HandlerFunc(UserHandler.GetUserById))))
 	mux.HandleFunc("GET /users", UserHandler.GetUsers)
-	mux.Handle("POST /user", middleware.JWTAuth(middleware.Log(http.HandlerFunc(UserHandler.CreateUser))))
-	mux.Handle("PUT /user/{id}", middleware.JWTAuth(middleware.Log(http.HandlerFunc(UserHandler.UpdateUser))))
-	mux.Handle("DELETE /user/{id}", middleware.JWTAuth(middleware.Log(http.HandlerFunc(UserHandler.DeleteUser))))
+	mux.Handle("POST /user", middleware.JwtAuthMiddleware(middleware.Log(http.HandlerFunc(UserHandler.CreateUser))))
+	mux.Handle("PUT /user/{id}", middleware.JwtAuthMiddleware(middleware.Log(http.HandlerFunc(UserHandler.UpdateUser))))
+	mux.Handle("DELETE /user/{id}", middleware.JwtAuthMiddleware(middleware.Log(http.HandlerFunc(UserHandler.DeleteUser))))
 	return mux
 }
-
-
