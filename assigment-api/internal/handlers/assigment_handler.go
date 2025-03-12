@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/miltonmullins/classroom-api/assigment-api/internal/models"
 	"github.com/miltonmullins/classroom-api/assigment-api/internal/services"
@@ -67,18 +66,15 @@ func (a *assigmentHandler) CreateAssigment(w http.ResponseWriter, r *http.Reques
 
 func (a *assigmentHandler) UpdateAssigment(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
-	assigmentID, err := strconv.Atoi(r.PathValue("id"))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	title := r.PathValue("title")
+
 	var assigment models.Assigment
-	err = json.NewDecoder(r.Body).Decode(&assigment)
+	err := json.NewDecoder(r.Body).Decode(&assigment)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	err = a.assigmentService.UpdateAssigment(ctx, assigmentID, &assigment)
+	err = a.assigmentService.UpdateAssigment(ctx, title, &assigment)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -87,13 +83,9 @@ func (a *assigmentHandler) UpdateAssigment(w http.ResponseWriter, r *http.Reques
 
 func (a *assigmentHandler) DeleteAssigment(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
-	assigmentID, err := strconv.Atoi(r.PathValue("id"))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	title := r.PathValue("title")
 
-	err = a.assigmentService.DeleteAssigment(ctx, assigmentID)
+	err := a.assigmentService.DeleteAssigment(ctx, title)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

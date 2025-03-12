@@ -10,8 +10,8 @@ import (
 type AssigmentService interface {
 	GetAssigment(ctx context.Context, param string) ([]*models.Assigment, error)
 	CreateAssigment(ctx context.Context, assigment *models.Assigment) error
-	UpdateAssigment(ctx context.Context, assigmentID int, assigment *models.Assigment) error
-	DeleteAssigment(ctx context.Context, assigmentID int) error
+	UpdateAssigment(ctx context.Context, title string, assigment *models.Assigment) error
+	DeleteAssigment(ctx context.Context, title string) error
 }
 
 type assigmentService struct {
@@ -30,9 +30,9 @@ func (s *assigmentService) GetAssigment(ctx context.Context, param string) ([]*m
 func (s *assigmentService) CreateAssigment(ctx context.Context, assigment *models.Assigment) error {
 	return s.assigmentRepository.CreateAssigment(ctx, assigment)
 }
-func (s *assigmentService) UpdateAssigment(ctx context.Context, assigmentID int, assigment *models.Assigment) error {
-	return s.assigmentRepository.UpdateAssigment(ctx, assigmentID, assigment)
+func (s *assigmentService) UpdateAssigment(ctx context.Context, title string, assigment *models.Assigment) error {
+	return s.assigmentRepository.UpdateAssigment(ctx, title, assigment)
 }
-func (s *assigmentService) DeleteAssigment(ctx context.Context, assigmentID int) error {
-	return s.assigmentRepository.DeleteAssigment(ctx, assigmentID)
+func (s *assigmentService) DeleteAssigment(ctx context.Context, title string) error {
+	return s.assigmentRepository.DeleteAssigment(ctx, title)
 }

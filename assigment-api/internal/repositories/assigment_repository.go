@@ -11,8 +11,8 @@ import (
 type AssigmentRepository interface {
 	GetAssigment(ctx context.Context, param string) ([]*models.Assigment, error)
 	CreateAssigment(ctx context.Context, assigment *models.Assigment) error
-	UpdateAssigment(ctx context.Context, assigmentID int, assigment *models.Assigment) error
-	DeleteAssigment(ctx context.Context, assigmentID int) error
+	UpdateAssigment(ctx context.Context, title string, assigment *models.Assigment) error
+	DeleteAssigment(ctx context.Context, title string) error
 }
 
 type assigmentRepository struct {
