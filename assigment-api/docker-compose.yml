@@ -1,7 +1,7 @@
 services:
   assigment-api:
     container_name: assigment-api
-    image: milton87/assigment-api:1.0.2
+    image: milton87/assigment-api:1.0.3
     build: .
     environment:
       DATABASE_URL: "mongodb://root:root@assigment_db:27017/admin?authSource=admin&authMechanism=SCRAM-SHA-256"
