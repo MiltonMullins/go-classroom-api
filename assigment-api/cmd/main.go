@@ -2,17 +2,17 @@ package main
 
 import (
 	"context"
-	"net/http"
 	"log"
-	"time"
+	"net/http"
 	"os"
+	"time"
 
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 
 	"github.com/miltonmullins/classroom-api/assigment-api/internal/handlers"
-	"github.com/miltonmullins/classroom-api/assigment-api/internal/services"
 	"github.com/miltonmullins/classroom-api/assigment-api/internal/repositories"
+	"github.com/miltonmullins/classroom-api/assigment-api/internal/services"
 )
 
 func main() {
@@ -20,9 +20,9 @@ func main() {
 	defer cancel()
 	client, err := mongo.Connect(options.Client().ApplyURI(os.Getenv("DATABASE_URL")))
 	defer func() {
-	 if err = client.Disconnect(ctx); err != nil {
-	  panic(err)
-	 }
+		if err = client.Disconnect(ctx); err != nil {
+			panic(err)
+		}
 	}()
 
 	router := initializeRoutes(client) // configure routes
@@ -35,18 +35,27 @@ func main() {
 	server.ListenAndServe() // Run the http server
 }
 
-
 func initializeRoutes(db *mongo.Client) *http.ServeMux {
 	assigmentHandler := handlers.NewAssigmentHandler(
 		services.NewAssigmentService(
 			repositories.NewAssigmentRepository(db)))
 
-	mux := http.NewServeMux()
+	studentTaskHandler := handlers.NewStudentTasklHandler(
+		services.NerStudentTaskRepository(
+			repositories.NewStudentTaskRepository(db)))
 
-	//CRUD
-	mux.HandleFunc("GET /assigment/{param}", assigmentHandler.GetAssigment)
+	mux := http.NewServeMux()
+			//TODO MIDDLEWARE
+	//CRUD Assigment
+	mux.HandleFunc("GET /assigment/{title}", assigmentHandler.GetAssigment)
 	mux.HandleFunc("POST /assigment", assigmentHandler.CreateAssigment)
-	mux.HandleFunc("UPDATE /assigment/{id}", assigmentHandler.UpdateAssigment)
-	mux.HandleFunc("DELETE /assigment/{id}", assigmentHandler.DeleteAssigment)
+	mux.HandleFunc("PUT /assigment/{title}", assigmentHandler.UpdateAssigment)
+	mux.HandleFunc("DELETE /assigment/{title}", assigmentHandler.DeleteAssigment)
+
+	//CRUD Student Task
+	mux.HandleFunc("GET /student-task/{assigment_id}", studentTaskHandler.GetStudentTasks)
+	mux.HandleFunc("POST /student-task", studentTaskHandler.CreateStudentTask)
+	mux.HandleFunc("PUT /student-task/{student_id}/{assigment_id}", studentTaskHandler.UpdateStudentTask)
+	mux.HandleFunc("DELETE /student-task/{student_id}/{assigment_id}", studentTaskHandler.DeleteStudentTask)
 	return mux
 }
