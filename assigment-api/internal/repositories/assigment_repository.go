@@ -48,9 +48,9 @@ func (r *assigmentRepository) CreateAssigment(ctx context.Context, assigment *mo
 	return nil
 }
 
-func (r *assigmentRepository) UpdateAssigment(ctx context.Context, assigmentID int, assigment *models.Assigment) error {
+func (r *assigmentRepository) UpdateAssigment(ctx context.Context, title string, assigment *models.Assigment) error {
 	collection := r.db.Database("assigment").Collection("assigment")
-	filter := bson.D{{Key: "ID", Value: assigmentID}}
+	filter := bson.D{{Key: "title", Value: title}}
 	update := bson.D{{Key: "$set", Value: assigment}}
 	/*
 	   	upsert := true
@@ -69,9 +69,9 @@ func (r *assigmentRepository) UpdateAssigment(ctx context.Context, assigmentID i
 	return nil
 }
 
-func (r *assigmentRepository) DeleteAssigment(ctx context.Context, assigmentID int) error {
+func (r *assigmentRepository) DeleteAssigment(ctx context.Context, title string) error {
 	collection := r.db.Database("assigment").Collection("assigment")
-	filter := bson.D{{Key: "ID", Value: assigmentID}}
+	filter := bson.D{{Key: "title", Value: title}}
 
 	_, err := collection.DeleteOne(ctx, filter)
 	if err != nil {
