@@ -28,7 +28,7 @@ func NewAssigmentHandler(assigmentService services.AssigmentService) AssigmentHa
 
 func (a *assigmentHandler) GetAssigment(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
-	param := r.PathValue("param")
+	param := r.PathValue("title")
 	assigments, err := a.assigmentService.GetAssigment(ctx, param)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
