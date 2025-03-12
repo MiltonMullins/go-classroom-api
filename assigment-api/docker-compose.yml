@@ -1,0 +1,29 @@
+services:
+  assigment-api:
+    container_name: assigment-api
+    image: milton87/assigment-api:1.0.2
+    build: .
+    environment:
+      DATABASE_URL: "mongodb://root:root@assigment_db:27017/admin?authSource=admin&authMechanism=SCRAM-SHA-256"
+    ports:
+      - "8082:8082"
+    depends_on:
+      - assigment_db
+  assigment_db:
+    container_name: assigment_db
+    image: mongo
+    restart: always
+    platform: linux/x86_64
+    networks:
+      - default
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_AUTH_SOURCE: admin
+  
+volumes:
+  mongodb: {}
