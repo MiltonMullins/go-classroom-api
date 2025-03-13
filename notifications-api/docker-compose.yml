@@ -1,0 +1,16 @@
+services:
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+  notifications-api:
+    container_name: notifications-api
+    image: milton87/notifications-api:1.0.0
+    build: .
+    environment:
+      - REDIS_ADDR=redis:6379
+    ports:
+      - "8084:8084"
+    depends_on:
+      - redis
