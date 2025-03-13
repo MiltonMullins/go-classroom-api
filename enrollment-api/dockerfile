@@ -1,0 +1,30 @@
+# Use oficial Golang Image
+FROM golang:1.24.0-alpine3.21
+
+# Set working directory
+WORKDIR /go/src/app
+
+# Copy all files from current directory to working directory
+COPY . .
+
+# Install dependencies
+RUN go get -d -v ./...
+
+# Build the Go app
+RUN go build -o producer ./cmd/producer/main.go
+RUN go build -o consumer ./cmd/consumer/main.go
+
+# Expose port 8080 to the outside world
+EXPOSE 8083
+
+# Copia el script de entrada
+COPY entrypoint.sh .
+
+# Dale permisos de ejecución al script de entrada
+RUN chmod +x entrypoint.sh
+
+# Expose port 8080 to the outside world
+EXPOSE 8083
+
+# Command to run the executable
+CMD ["./entrypoint.sh"]
