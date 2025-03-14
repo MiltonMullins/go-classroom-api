@@ -22,3 +22,4 @@
     Message Broker developed using Kafka, sending messages to a enrollment topic to be consumed for Assigment API and Notifications API when a user is enrolled to a Classroom.
 
 ### Notifications API
+    KVS developed using Redis to store the notifications sended to Users.
