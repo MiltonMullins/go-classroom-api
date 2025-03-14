@@ -23,3 +23,15 @@
 
 ### Notifications API
     KVS developed using Redis to store the notifications sended to Users.
+
+
+## Arquitecture
+
+## Swagger o Postman Curls
+
+## How to use in Docker
+
+## TODO
+ - Tests
+ - Frontend
+ - Complete Readme
