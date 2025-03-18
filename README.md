@@ -28,7 +28,8 @@
 ## Arquitecture
 ### Microservices
 ![Microservices](resources/architecture.png)
-
+### Actor Actions
+![Actors-Actions](resources/actor_actions.png)
 
 ## Swagger o Postman Curls
 
