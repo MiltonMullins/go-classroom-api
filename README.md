@@ -26,6 +26,9 @@
 
 
 ## Arquitecture
+### Microservices
+![Microservices](resources/architecture.png)
+
 
 ## Swagger o Postman Curls
 
