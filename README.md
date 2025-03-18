@@ -30,6 +30,8 @@
 ![Microservices](resources/architecture.png)
 ### Actor Actions
 ![Actors-Actions](resources/actor_actions.png)
+### Enroll Sequence Diagram
+![Enroll-Sequence](resources/enroll_sequence_diagram.png)
 
 ## Swagger o Postman Curls
 
